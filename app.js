@@ -61,6 +61,6 @@ app.get('/', (req,res) =>{
 // || ------------------- ||
 //     Start Application
 // || ------------------- ||
-http.listen(3000, () => {
+http.listen(process.env.PORT || 3000, () => {
   console.log('-- Bug Tracker server has started --');
 })
