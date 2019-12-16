@@ -50,8 +50,16 @@ db.connect(process.env.MONGOOSE, {
 });
 
 // --- Temp location for routes ---
+app.get('/auth_config.json', (req,res) =>{
+  res.sendFile(__dirname+'/auth_config.json')
+})
+
 app.get('/toDo', (req,res) => {
   res.render('toDo');
+});
+
+app.get('/login', (req,res) => {
+  res.render('login');
 })
 
 app.get('/', (req,res) =>{
@@ -61,6 +69,6 @@ app.get('/', (req,res) =>{
 // || ------------------- ||
 //     Start Application
 // || ------------------- ||
-http.listen(process.env.PORT || 3000, () => {
+http.listen(process.env.PORT, () => {
   console.log('-- Bug Tracker server has started --');
 })

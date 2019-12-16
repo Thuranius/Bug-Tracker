@@ -64,6 +64,10 @@ body {
   color: #999
 }
 
+.hidden {
+  display: none;
+}
+
 .sidebar {
   position: fixed;
   top: 0;
