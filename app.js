@@ -8,6 +8,7 @@ const express               = require('express'),
       passport              = require('passport'),
       LocalStrategy         = require('passport-local'),
       passportLocalMongoose = require('passport-local-mongoose'),
+      Auth0Strategy         = require('passport-auth0'),
       methodOverride        = require('method-override'),
       cookieParser          = require('cookie-parser'),
       session               = require('express-session'),
@@ -15,6 +16,20 @@ const express               = require('express'),
       io                    = require('socket.io')(http);
 
 dotenv.config()
+
+var strategy = new Auth0Strategy({
+   domain:       process.env.AUTH_DOMAIN,
+   clientID:     process.env.AUTH_CLIENT,
+   clientSecret: process.env.AUTH_SECRET,
+   callbackURL:  '/'
+  },
+  function(accessToken, refreshToken, extraParams, profile, done) {
+    // accessToken is the token to call Auth0 API (not needed in the most cases)
+    // extraParams.id_token has the JSON Web Token
+    // profile has all the information from the user
+    return done(null, profile);
+  }
+);
 
 // --- Future location for Route folders ---
 
@@ -58,9 +73,10 @@ app.get('/toDo', (req,res) => {
   res.render('toDo');
 });
 
-app.get('/login', (req,res) => {
-  res.render('login');
-})
+app.get('/login',
+  passport.authenticate('auth0', {}), function (req, res) {
+  res.redirect("/");
+});
 
 app.get('/', (req,res) =>{
   res.render('index');
