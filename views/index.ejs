@@ -5,20 +5,18 @@
       <div class="row">
         <h1>This is my work in progress bug tracker</h1>
       </div>
-      <div class="hidden" id="gated-content">
-        <p>
-          You're seeing this content because you're currently
-          <strong>logged in</strong>.
-        </p>
-        <label>
-          Access token:
-          <pre id="ipt-access-token"></pre>
-        </label>
-        <label>
-          User profile:
-          <pre id="ipt-user-profile"></pre>
-        </label>
-      </div>
+      <% if(locals.user){ %>
+        <div>
+          <p>
+            You're seeing this content because you're currently
+            <strong>logged in</strong>.
+          </p>
+          <label>
+            Welcome: <%=locals.user.nickname%>
+            <% console.log(locals.user) %>
+          </label>
+        </div>
+      <% } %>
     </main>
 </div>
 

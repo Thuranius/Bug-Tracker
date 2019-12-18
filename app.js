@@ -15,21 +15,35 @@ const express               = require('express'),
       dotenv                = require('dotenv'),
       io                    = require('socket.io')(http);
 
-dotenv.config()
+dotenv.config();
+
+var userInViews = require('./middleware/userInViews'),
+    authRouter  = require('./routes/auth'),
+    indexRouter = require('./routes/index'),
+    usersRouter = require('./routes/users');
 
 var strategy = new Auth0Strategy({
    domain:       process.env.AUTH_DOMAIN,
    clientID:     process.env.AUTH_CLIENT,
    clientSecret: process.env.AUTH_SECRET,
-   callbackURL:  '/'
+   callbackURL:  '/callback'
   },
-  function(accessToken, refreshToken, extraParams, profile, done) {
+  (accessToken, refreshToken, extraParams, profile, done) => {
     // accessToken is the token to call Auth0 API (not needed in the most cases)
     // extraParams.id_token has the JSON Web Token
     // profile has all the information from the user
     return done(null, profile);
   }
 );
+
+passport.use(strategy);
+passport.serializeUser((user, done) => {
+  done(null, user);
+});
+
+passport.deserializeUser((user, done) => {
+  done(null, user);
+});
 
 // --- Future location for Route folders ---
 
@@ -53,6 +67,17 @@ app.use(session({
 	saveUninitialized: true
 }));
 
+app.use((req,res,next) => {
+	res.locals.user = req.user;
+	next();
+});
+
+
+app.use(userInViews());
+app.use('/', authRouter);
+app.use('/', indexRouter);
+app.use('/', usersRouter);
+
 // --- Connect to Mongoose database ---
 db.connect(process.env.MONGOOSE, {
   useNewUrlParser: true,
@@ -67,24 +92,11 @@ db.connect(process.env.MONGOOSE, {
 // --- Temp location for routes ---
 app.get('/auth_config.json', (req,res) =>{
   res.sendFile(__dirname+'/auth_config.json')
-})
-
-app.get('/toDo', (req,res) => {
-  res.render('toDo');
 });
-
-app.get('/login',
-  passport.authenticate('auth0', {}), function (req, res) {
-  res.redirect("/");
-});
-
-app.get('/', (req,res) =>{
-  res.render('index');
-})
 
 // || ------------------- ||
 //     Start Application
 // || ------------------- ||
 http.listen(process.env.PORT, () => {
   console.log('-- Bug Tracker server has started --');
-})
+});

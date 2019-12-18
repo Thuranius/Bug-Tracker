@@ -56,7 +56,7 @@ const query = window.location.search;
 if(query.includes('code=') && query.includes('state=')){
 
   // Process login state
-  await auth0.handleRedirectCallback(); // <- Err: Await is only valid in async function
+  auth0.handleRedirectCallback(); // <- Err: Await is only valid in async function
 
   updateUI();
 
@@ -66,7 +66,5 @@ if(query.includes('code=') && query.includes('state=')){
 
 const updateUI = async () => {
   const isAuthenticated = await auth0.isAuthenticated();
-  // document.getElementById("btn-logout").disabled = !isAuthenticated;
-  document.getElementById("btn-login").disabled = isAuthenticated;
   console.log(isAuthenticated);
 };
