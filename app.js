@@ -17,8 +17,8 @@ const express               = require('express'),
 
 dotenv.config();
 
-var userInViews = require('./middleware/userInViews'),
-    authRouter  = require('./routes/auth'),
+// --- Route folders ---
+var authRouter  = require('./routes/auth'),
     indexRouter = require('./routes/index'),
     usersRouter = require('./routes/users');
 
@@ -29,9 +29,6 @@ var strategy = new Auth0Strategy({
    callbackURL:  '/callback'
   },
   (accessToken, refreshToken, extraParams, profile, done) => {
-    // accessToken is the token to call Auth0 API (not needed in the most cases)
-    // extraParams.id_token has the JSON Web Token
-    // profile has all the information from the user
     return done(null, profile);
   }
 );
@@ -44,8 +41,6 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser((user, done) => {
   done(null, user);
 });
-
-// --- Future location for Route folders ---
 
 // --- App configuration ---
 app.use(require('express-session')({
@@ -71,9 +66,6 @@ app.use((req,res,next) => {
 	res.locals.user = req.user;
 	next();
 });
-
-
-app.use(userInViews());
 app.use('/', authRouter);
 app.use('/', indexRouter);
 app.use('/', usersRouter);
