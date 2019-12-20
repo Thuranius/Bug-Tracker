@@ -18,9 +18,10 @@ const express               = require('express'),
 dotenv.config();
 
 // --- Route folders ---
-var authRouter  = require('./routes/auth'),
-    indexRouter = require('./routes/index'),
-    usersRouter = require('./routes/users');
+var authRouter    = require('./routes/auth'),
+    indexRouter   = require('./routes/index'),
+    projectRouter = require('./routes/projectRoutes'),
+    usersRouter   = require('./routes/users');
 
 var strategy = new Auth0Strategy({
    domain:       process.env.AUTH_DOMAIN,
@@ -67,6 +68,7 @@ app.use((req,res,next) => {
 	next();
 });
 app.use('/', authRouter);
+app.use('/', projectRouter);
 app.use('/', indexRouter);
 app.use('/', usersRouter);
 

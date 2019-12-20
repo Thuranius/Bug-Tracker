@@ -11,6 +11,7 @@ var ProjectSchema = new mongoose.Schema({
       username: String, // <-- Set to auth0 name
       change: String
     }],
+    creator: String,
     users: [{
       userID: String,
       username: String,
@@ -22,6 +23,9 @@ var ProjectSchema = new mongoose.Schema({
       date: Date,
       title: String,
       status: String,
-      creator: String // <-- user that created the ticket
+      creator: String, // <-- user that created the ticket
+      assigned: String // <-- user assigned the ticket
     }]
 });
+
+module.exports = mongoose.model('Project', ProjectSchema);
